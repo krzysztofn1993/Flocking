@@ -5,8 +5,12 @@ class Boid {
         this.velocity = p5.Vector.random2D();
         this.velocity.setMag(random(0.5, 1.5));
         this.acc = createVector();
-        this.maxForce = 0.7;
-        this.maxSpeed = 3;
+        this.maxSpeed = random(2.5, 4.5);
+        this.maxForce = 1.4;
+        this.repelingMult = 1;
+        this.avgPosMult = 1;
+        this.avgSpeedMult = 1;
+        this.perception = 25;
     }
 
     boundaries () {
@@ -15,20 +19,23 @@ class Boid {
         } else if (this.position.x < 0 ) {
             this.position.x = width;
         }
-        if (this.position.y > height ) {
+        if (this.position.y > height) {
             this.position.y = 0;
         } else if (this.position.y < 0 ) {
             this.position.y = height;
         }
     }
 
-    show () {
-        strokeWeight(6);
+    show (str) {
+        strokeWeight(str);
         stroke(255);
         point(this.position.x, this.position.y)
     }
 
-    update () {
+    update (rep, speed, pos) {
+        this.repelingMult = rep;
+        this.avgPosMult = pos;
+        this.avgSpeedMult = speed;
         this.position.add(this.velocity);
         this.velocity.add(this.acc);
         this.velocity.setMag(this.maxSpeed);
@@ -37,25 +44,26 @@ class Boid {
     flock (boids) {
         this.acc.set(0,0);
         let forces = this.align(boids);
-        forces.repeling.mult(1.5);
+        forces.repeling.mult(this.repelingMult);
         this.acc.add(forces.repeling);
+        forces.avgSpeed.mult(this.avgSpeedMult);
         this.acc.add(forces.avgSpeed);
+        forces.avgPos.mult(this.avgPosMult);
         this.acc.add(forces.avgPos);
     }
 
     align (boids) {
-        let distance = 50;
         let avgSpeed = createVector();
         let avgPos = createVector();
         let repeling = createVector();
         let nearObjects = 0;
         for (let index = 0; index < boids.length; index++) {
-            let currentDistance = this.position.dist(boids[index].position)
-            if (this != boids[index] && currentDistance < distance) {
+            let currentDistance = this.position.dist(boids[index].userData.position)
+            if (this != boids[index].userData) {
                 nearObjects++;
-                avgSpeed.add(boids[index].velocity);
-                avgPos.add(boids[index].position);
-                repeling.add(p5.Vector.sub(this.position, boids[index].position).div(currentDistance));
+                avgSpeed.add(boids[index].userData.velocity);
+                avgPos.add(boids[index].userData.position);
+                repeling.add(p5.Vector.sub(this.position, boids[index].userData.position).div(currentDistance));
             }
         }
         if (nearObjects != 0) {
