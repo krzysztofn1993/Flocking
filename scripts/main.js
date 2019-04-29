@@ -13,7 +13,7 @@ var perception = 25;
 var strW = 4;
 
 console.log(' to hide qtree set qts = false');
-console.log(' to change no of boids set boids to integer');
+console.log(' to change amount of boids set boids to integer');
 console.log(' to hide qtree set qts = false');
 console.log(' to set capacity of qtree set capacity');
 console.log(' to change perception of boids set perception');
@@ -74,7 +74,7 @@ function draw() {
         frameR = 0;
         console.log(frameRate());
         console.log(' to hide qtree set qts = false');
-        console.log(' to change no of boids set boids to integer');
+        console.log(' to change amount of boids set boids to integer');
         console.log(' to hide qtree set qts = false');
         console.log(' to set capacity of qtree set capacity');
         console.log(' to change perception of boids set perception');
